@@ -1,9 +1,3 @@
-p.p1 {margin: 0.0px 0.0px 3.0px 0.0px; font: 26.0px Arial}
-p.p2 {margin: 0.0px 0.0px 16.0px 0.0px; font: 15.0px Arial; color: #797979}
-p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 11.0px Arial}
-p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 11.0px Arial; min-height: 12.0px}
-span.Apple-tab-span {white-space:pre}
-
 ALHE Projekt wstępny
 
 Wiktor Grzesiuk Robert Lichman
