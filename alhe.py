@@ -1,13 +1,13 @@
 '''
-0 - gora 
+0 - dol
 1 - prawo (centrum)
-2 - dol
+2 - gora
 3 - lewo (od centrum)
 
 pasy:
 0 - lewo
 1 - srodek
-2 - prawo prosto
+2 - prawo
 '''
 import random
 from datetime import time
@@ -36,13 +36,13 @@ def generate_one_car_data():
         direction_to = random_direction_generator(DIRECTIONS_AFTERNOON, direction_from).get_random_direction()
     else:
         direction_to = random_direction_generator([], direction_from).get_random_direction()
-
-    if math.fabs(direction_from - direction_to)%4 == 2:
-        lane = random.randrange(1, 3, 1)
-    elif math.fabs(direction_from - direction_to)%4 == 1:
-        lane = 2
-    else:
+    lane = 2
+    if ((direction_to-direction_from)%4) == 1:
         lane = 0
+    elif ((direction_to-direction_from)%4) == 2:
+        lane = random.randrange(1, 3, 1)
+    elif ((direction_to-direction_from)%4) == 3:
+        lane = 2
     minute = random.randrange(0, 60, 1)
     second = random.randrange(0, 60, 1)
     return car(hour, minute, second, direction_from, direction_to, lane)
