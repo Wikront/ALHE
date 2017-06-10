@@ -4,7 +4,7 @@ import random
 class TrafficOptymalization(Annealer):
 	def move(self):
 		hour=random.randrange(0,23, 1)
-		sign=1-2*random.randrange(0,1, 1)
+		sign=1-2*random.randrange(0,2, 1)
 		light=random.randrange(0,8,1)
 		value=random.randrange(1,5,1)
 		if(sign*value+self.state[light].times[hour].intValue()>0):
@@ -38,12 +38,12 @@ def calcObjectiveFunction(lights):
 		if(newTime<customTime(time(23,59,59)).intValue()):
 			currentTime.setTimeFromInt(newTime)
 	# print(str(100-sum/size))
-	return sum/size
+	return float(float(sum))
 def initLightLanes():
 	for i in range(8):
 		times=[]
 		for i in range(24):
-			times.append(customTime(time(0,0,20)))
+			times.append(customTime(time(0,0,1)))
 		lightObj=light(times)	
 		lights.append(lightObj)
 	for car in cars:
@@ -145,7 +145,7 @@ def main():
 	average=calcObjectiveFunction(lights)
 	print("Poczatkowy czas oczekiwania: "+str(average))
 	tsp=TrafficOptymalization(lights)
-	tsp.steps = 50
+	tsp.steps = 100
 	tsp.copy_strategy='deepcopy'
 	state,e=tsp.anneal()
 	print('Czas oczekiwania: '+str(e))
