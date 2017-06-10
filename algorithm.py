@@ -1,17 +1,33 @@
-
 from datetime import datetime, time, timedelta
+from simanneal import Annealer
+import random
+class TrafficOptymalization(Annealer):
+	def move(self):
+		hour=random.randrange(0,23, 1)
+		sign=1-2*random.randrange(0,1, 1)
+		light=random.randrange(0,8,1)
+		value=random.randrange(1,5,1)
+		if(sign*value+self.state[light].times[hour].intValue()>0):
+			self.state[light].times[hour].setTimeFromInt(self.state[light].times[hour].intValue()+value)
+		else:
+			self.move()
+ 	def energy(self):
+		return calcObjectiveFunction(self.state)
 
-def calcObjectiveFunction():
+def calcObjectiveFunction(lights):
 	size=len(cars)
 	currentTime=customTime(time(0,0,0))
 	newTime=currentTime.intValue()
 	sum=0
 	directionIndex=0
+	for light in lights:
+		light.firstIterator=0
+		light.secondIterator=0
 	while newTime<customTime(time(23,59,59)).intValue():
-		downStraight=lights[directionIndex+1]
-		downLeft=lights[directionIndex]
-		upStraight=lights[(directionIndex+3)%8]
-		upLeft=lights[(directionIndex+2)%8]
+		downStraight=lights[(4*directionIndex+1)%8]
+		downLeft=lights[(4*directionIndex)%8]
+		upStraight=lights[(4*directionIndex+3)%8]
+		upLeft=lights[(4*directionIndex+2)%8]
 		sum+=downStraight.runOneCycle(currentTime.intValue())
 		sum+=downLeft.runOneCycle(currentTime.intValue())
 		sum+=upStraight.runOneCycle(currentTime.intValue()+downStraight.times[currentTime.time.hour].intValue())
@@ -21,7 +37,7 @@ def calcObjectiveFunction():
 		newTime=max(upLeftStartTime+upLeft.times[currentTime.time.hour].intValue(),currentTime.intValue()+downStraight.times[currentTime.time.hour].intValue()+upStraight.times[currentTime.time.hour].intValue())
 		if(newTime<customTime(time(23,59,59)).intValue()):
 			currentTime.setTimeFromInt(newTime)
-	print(str(sum)+'/'+str(size))
+	# print(str(100-sum/size))
 	return sum/size
 def initLightLanes():
 	for i in range(8):
@@ -47,7 +63,6 @@ class customTime():
 	def addSeconds(self,second):
 		self.time+=timedelta(seconds=second)
 	def setTimeFromInt(self,seconds):
-		print(str(seconds/(60*60)))
 		self.time=time(seconds/(60*60),(seconds%(60*60))/60,(seconds%60))
 class light():
 	def __init__(self, times):
@@ -68,7 +83,8 @@ class light():
 	def runOneLane(self,startTimeValue, lane):
 		sum=0
 		startTime=customTime(time(0,0,0))
-		startTime.setTimeFromInt(startTimeValue)
+		if(startTimeValue<customTime(time(23,59,59)).intValue()):
+			startTime.setTimeFromInt(startTimeValue)
 		currentTime=startTime.intValue()
 		carsWaitingBefore=0
 		iterator=0
@@ -126,8 +142,22 @@ def readData():
 def main():
 	readData()
 	initLightLanes()
-	average=calcObjectiveFunction()
-	print('Srednia '+str(average))
+	average=calcObjectiveFunction(lights)
+	print("Poczatkowy czas oczekiwania: "+str(average))
+	tsp=TrafficOptymalization(lights)
+	tsp.steps = 50
+	tsp.copy_strategy='deepcopy'
+	state,e=tsp.anneal()
+	print('Czas oczekiwania: '+str(e))
+	string=''
+	for i in range(24):
+		string+=str(i)+'      '
+	print('        '+string)
+	for i in range(8):
+		string=str(i)+'.      '
+		for j in range(24):
+			string+=str(state[i].times[j].intValue())+'      '
+		print(string)
 
 config_file = 'data.txt'
 cars=[]
