@@ -157,7 +157,7 @@ def main():
 	state=lights
 	
 	for hour in range(24):
-		print("Godzina: "+str(hour))
+		print("Godzina: "+str(hour)+'\n')
 		tsp=TrafficOptymalization(state,hour)
 		tsp.steps = 200
 		tsp.Tmin=0.1
