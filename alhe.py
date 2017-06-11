@@ -37,14 +37,16 @@ def generate_one_car_data():
     else:
         direction_to = random_direction_generator([], direction_from).get_random_direction()
     lane = 2
-    if ((direction_to-direction_from)%4) == 1:
+    if ((4+direction_to-direction_from)%4) == 1:
         lane = 0
-    elif ((direction_to-direction_from)%4) == 2:
+    elif ((4+direction_to-direction_from)%4) == 2:
         lane = random.randrange(1, 3, 1)
-    elif ((direction_to-direction_from)%4) == 3:
+    elif ((4+direction_to-direction_from)%4) == 3:
         lane = 2
     minute = random.randrange(0, 60, 1)
     second = random.randrange(0, 60, 1)
+    if(hour>=0 and hour<=4 and random.randrange(0,100,1)!=0):
+        hour=random.randrange(5,24,1)
     return car(hour, minute, second, direction_from, direction_to, lane)
 
 class random_hour_generator():
@@ -72,8 +74,8 @@ class cars_set():
         return self.list
 
 def main():
-    cars = cars_set().generate_data(300)
-    for i in range(300):
+    cars = cars_set().generate_data(3000)
+    for i in range(3000):
         FILE.write(cars[i].to_string() + '\n')
 	
 main()
